@@ -1,6 +1,85 @@
 # S4.-API
 
-Descripció
+INSTALACIÓN DE TYPSCRIPT:
+Paso 1: iniciar el proyecto TypeScript
+ Para comenzar su proyecto TypeScript, deberá crear un directorio para su proyecto.
+ 
+ Ahora cambie al directorio de su proyecto:
+  cd "nombre del directorio creado"
+  
+ Con el directorio de su proyecto configurado, puede instalar TypeScript:
+  npm i typescript --save-dev
+ Es importante incluir la --save-devbandera porque guarda TypeScript como una dependencia de desarrollo. Esto significa que se requiere TypeScript para el desarrollo de su proyecto.
+
+ Con TypeScript instalado, puede inicializar su proyecto TypeScript usando el siguiente comando:
+  npx tsc --init
+  npmTambién incluye una herramienta llamada npx, que ejecutará paquetes ejecutables. npxnos permite ejecutar paquetes sin tener que instalarlos globalmente.
+
+ El tsc comando se utiliza aquí porque es el compilador TypeScript integrado. Cuando escribe código en TypeScript, ejecutarlo tsctransformará o compilará su código en JavaScript.
+
+El uso de la --init bandera en el comando anterior inicializará su proyecto creando un tsconfig.json archivo en el typescript-project directorio de su proyecto. Este tsconfig.json archivo le permitirá configurar y personalizar aún más cómo tsc interactúan TypeScript
+y el compilador. Puede eliminar, agregar y cambiar configuraciones en este archivo para satisfacer mejor sus necesidades.
+
+Abra tsconfig.jsonen su editor para encontrar la configuración predeterminada:
+
+nano tsconfig.json
+Habrá muchas opciones, la mayoría de las cuales están comentadas:
+
+proyecto-mecanografiado/tsconfig.json
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Projects */
+    // "incremental": true,                              /* Enable incremental compilation */
+    // "composite": true,                                /* Enable constraints that allow a TypeScript project to be used with project references. */
+    // "tsBuildInfoFile": "./",                          /* Specify the folder for .tsbuildinfo incremental compilation files. */
+    // "disableSourceOfProjectReferenceRedirect": true,  /* Disable preferring source files instead of declaration files when referencing composite projects */
+    // "disableSolutionSearching": true,                 /* Opt a project out of multi-project reference checking when editing. */
+    // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
+    
+    . . .
+  }
+}
+Puede personalizar su configuración de TypeScript a través del tsconfig.jsonarchivo. Por ejemplo, podría considerar descomentar la outDirentrada y configurarla en "./build", lo que colocará todos sus archivos TypeScript compilados en ese directorio.
+
+Con TypeScript instalado y su tsconfig.jsonarchivo en su lugar, ahora puede pasar a codificar su aplicación TypeScript y compilarla.
+
+Nota: El paso 3 a continuación reemplazará muchas de sus configuraciones con valores predeterminados sensatos, pero estos cambios lo ayudarán a comenzar de inmediato.
+
+Paso 2: compilar el proyecto TypeScript
+Ahora puede comenzar a codificar su proyecto TypeScript. Abra un nuevo archivo nombrado index.tsen su editor. Escriba el siguiente código TypeScript en index.ts:
+
+proyecto-mecanografiado/index.ts
+const world = 'world';
+
+export function hello(who: string = world): string {
+  return `Hello ${who}! `;
+}
+Con este código TypeScript implementado, su proyecto está listo para ser compilado. Ejecute tscdesde el directorio de su proyecto:
+
+npx tsc
+Notará que el index.jsarchivo JavaScript compilado y el index.js.maparchivo de mapa fuente se agregaron a la buildcarpeta si así lo especificó en el tsconfig.jsarchivo.
+
+Abra index.jsy encontrará el siguiente código JavaScript compilado:
+
+proyecto-mecanografiado/build/index.js
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.hello = void 0;
+const world = 'world';
+function hello(who = world) {
+    return `Hello ${who}! `;
+}
+exports.hello = hello;
+Ejecutar el compilador TypeScript cada vez que realiza un cambio puede resultar tedioso. Para solucionar este problema, puede poner el compilador en modo de vigilancia, que volverá a compilar su código cada vez que se realicen cambios.
+
+Puede activar el modo de vigilancia usando el siguiente comando:
+
+npx tsc -w
+Ha aprendido cómo funciona el compilador de TypeScript y ahora puede compilar con éxito sus archivos de TypeScript. Puede llevar sus proyectos de TypeScript al siguiente nivel introduciendo un linter en su flujo de trabajo.
+
+
 Als anteriors lliuraments, les dades que hem utilitzat a les nostres webs els hem agregat nosaltres al programa (hardcoded), però no és habitual.
 
 Com a la majoria de webs reals, consumirem les dades d'una API en aquest exercici. Per sort, no haurem d'implementar una API per a guardar les dades en una base de dades, i poder consumir-los amb una sèrie de crides. En lloc d'això, usarem una API ja feta que ens permetrà obtenir el llistat de naus fàcilment.
