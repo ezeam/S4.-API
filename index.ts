@@ -1,12 +1,12 @@
 const buttonSiguiente = document.querySelector("siguiente");
 const chisteContainer = document.querySelector(".chiste-container");
 const reportChistes: {}[] = [];
-const buttonValora1 = document.querySelector("valora1");
-const buttonValora2 = document.querySelector("valora2");
-const buttonValora3 = document.querySelector("valora3");
-let objetoChiste;
+let buttonValora1 = document.querySelector(".valora1");
+let buttonValora2 = document.querySelector(".valora2");
+let buttonValora3 = document.querySelector(".valora3");
 
-//AL PASAR CHISTE COMO PARÁMETRO DE LA FUNCIÓN valoracionChistes ME DICE QUE NO EXISTE. HABRÍA QUE GUARDAR EL OBJETO QUE PASA LA FUNCIÓN traerChiste EN UNA VARIABLE GLOBAL
+let textoChiste: string = "";
+
 
 interface chisteInterface{
   joke: string;
@@ -26,18 +26,42 @@ function traerChiste() {
        .catch((error) => console.error("Error al traer el chiste:", error));
 }
 
+traerMeteo();
+function traerMeteo() {
+   fetch("https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m", 
+   { headers: {
+           'Accept': 'application/json'
+       } })
+       .then(function(res) {
+        res.json()
+        console.log(res)
+       } )
+       //.then(data => mostrarMeteo(data))
+       .catch((error) => console.error("Error al traer el meteo:", error));       
+}
+
 function mostrarChiste(chiste: chisteInterface){
   const h5 = document.createElement('h5');
   h5.textContent = chiste.joke;
+  textoChiste = chiste.joke;
 
   const div = document.createElement('div');
   div.appendChild(h5);
   chisteContainer?.appendChild(div);
   console.log(h5);
 }
-console.table(reportChistes);
 
 function siguienteChiste(){
+  if (buttonValora1 instanceof HTMLButtonElement) {
+    buttonValora1.disabled = false;
+  }
+  if (buttonValora2 instanceof HTMLButtonElement) {
+    buttonValora2.disabled = false;
+  }
+  if (buttonValora3 instanceof HTMLButtonElement) {
+    buttonValora3.disabled = false;
+  }
+
   if(chisteContainer){
     chisteContainer.innerHTML = '';
   }
@@ -47,15 +71,27 @@ function siguienteChiste(){
   traerChiste();
 }
 
-function valoracionChistes(chiste: chisteInterface){
-  if(buttonValora1){
-    console.log("¿Entras?");
-    const valoracion = {
-      joke: chiste.joke,
-      score: 1,
-      //data: 
-    };
-    reportChistes.push(valoracion);
+function valoracionChistes(num: number){
+  if (buttonValora1 instanceof HTMLButtonElement) {
+    buttonValora1.disabled = true;
   }
+  if (buttonValora2 instanceof HTMLButtonElement) {
+    buttonValora2.disabled = true;
+  }
+  if (buttonValora3 instanceof HTMLButtonElement) {
+    buttonValora3.disabled = true;
+  }
+
+  let now: Date = new Date();
+
+  const valoracion = {
+    joke: textoChiste,
+    score: num,
+    data: now,
+  };
+  reportChistes.push(valoracion);
+  console.log("Array de chistes:");
+  console.table(reportChistes); 
 }
+
 
