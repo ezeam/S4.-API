@@ -7,7 +7,6 @@ let buttonValora3 = document.querySelector(".valora3");
 let textoChiste: string = "";
 let estadoAlternar = false;
 
-
 interface chisteInterface{
   joke: string;
 }
@@ -15,7 +14,6 @@ interface chisteInterface{
 interface norrisInterface{
   value: string;
 }
-
 
 traerChiste();
 function traerChiste() {
