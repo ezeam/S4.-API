@@ -6,6 +6,7 @@ var buttonValora2 = document.querySelector(".valora2");
 var buttonValora3 = document.querySelector(".valora3");
 var textoChiste = "";
 var estadoAlternar = false;
+var objetoValoracion = {};
 traerChiste();
 function traerChiste() {
     fetch("https://icanhazdadjoke.com/", { headers: {
@@ -15,35 +16,30 @@ function traerChiste() {
         .then(function (data) { return mostrarChiste(data); })
         .catch(function (error) { return console.error("Error al traer el chiste:", error); });
 }
+var tempPrintHtml = document.getElementById("meteo");
+var iconPrintHtml = document.getElementById("iconPrint");
 traerMeteo();
 function traerMeteo() {
-    fetch("https://api.open-meteo.com/v1/forecast?latitude=41.3851&longitude=2.1734&hourly=temperature_2m", { headers: {
-            'Accept': 'application/json'
-        } })
-        .then(function (res) { return res.json(); })
-        .then(function (data) { return mostrarMeteo(data); })
-        .catch(function (error) { return console.error("Error al traer el meteo:", error); });
+    fetch("https://api.openweathermap.org/data/2.5/weather?id=3128760&appid=23ebbc592b1e6b4598e259f981fa0834")
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+        var temperature = data.main.temp;
+        var tempCelsius = (temperature - 273.15).toFixed(1);
+        var icon = data.weather[0].icon;
+        var iconHtml = "<img src=\"https://openweathermap.org/img/wn/".concat(icon, ".png\" alt=\"Weather icon\">");
+        if (tempPrintHtml) {
+            tempPrintHtml.innerHTML = tempCelsius + "ºC";
+        }
+        if (iconPrintHtml) {
+            iconPrintHtml.innerHTML = iconHtml;
+        }
+    });
 }
 function traerChisteNorris() {
     fetch("https://api.chucknorris.io/jokes/random")
         .then(function (res) { return res.json(); })
         .then(function (data) { return mostrarChisteNorris(data); })
         .catch(function (error) { return console.error("Error al traer el chiste de Chuck Norris:", error); });
-}
-function mostrarMeteo(data) {
-    if (data.hourly && data.hourly.temperature_2m) {
-        var temperaturas = data.hourly.temperature_2m;
-        var meteoElemento = document.getElementById("meteo");
-        if (meteoElemento) {
-            meteoElemento.innerHTML = "Temperatura actual: ".concat(temperaturas[0], " \u00B0C");
-        }
-        else {
-            console.error('El elemento en el que intentas imprimir no existe');
-        }
-    }
-    else {
-        console.log('Datos de temperatura no disponibles.');
-    }
 }
 function mostrarChiste(chiste) {
     var h5 = document.createElement('h5');
@@ -65,15 +61,6 @@ function mostrarChisteNorris(data) {
 }
 function siguienteChiste() {
     var cont = 0;
-    if (buttonValora1 instanceof HTMLButtonElement) {
-        buttonValora1.disabled = false;
-    }
-    if (buttonValora2 instanceof HTMLButtonElement) {
-        buttonValora2.disabled = false;
-    }
-    if (buttonValora3 instanceof HTMLButtonElement) {
-        buttonValora3.disabled = false;
-    }
     if (chisteContainer) {
         chisteContainer.innerHTML = '';
     }
@@ -87,24 +74,17 @@ function siguienteChiste() {
         traerChisteNorris();
     }
     estadoAlternar = !estadoAlternar;
+    reportChistes.push(objetoValoracion);
+    console.log("Array de chistes:");
+    console.table(reportChistes);
 }
 function valoracionChistes(num) {
-    if (buttonValora1 instanceof HTMLButtonElement) {
-        buttonValora1.disabled = true;
-    }
-    if (buttonValora2 instanceof HTMLButtonElement) {
-        buttonValora2.disabled = true;
-    }
-    if (buttonValora3 instanceof HTMLButtonElement) {
-        buttonValora3.disabled = true;
-    }
     var ahoraFecha = new Date();
     var valoracion = {
         joke: textoChiste,
         score: num,
         data: ahoraFecha,
     };
-    reportChistes.push(valoracion);
-    console.log("Array de chistes:");
-    console.table(reportChistes);
+    objetoValoracion = valoracion;
+    return valoracion;
 }

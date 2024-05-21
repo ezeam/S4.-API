@@ -6,6 +6,7 @@ let buttonValora2 = document.querySelector(".valora2");
 let buttonValora3 = document.querySelector(".valora3");
 let textoChiste: string = "";
 let estadoAlternar = false;
+let objetoValoracion: {} = {};
 
 interface chisteInterface{
   joke: string;
@@ -13,10 +14,10 @@ interface chisteInterface{
 
 interface norrisInterface{
   value: string;
-}
+} 
 
 traerChiste();
-function traerChiste() {
+function traerChiste(): void{
    fetch("https://icanhazdadjoke.com/", { headers: {
            'Accept': 'application/json'
        } })
@@ -25,39 +26,46 @@ function traerChiste() {
        .catch((error) => console.error("Error al traer el chiste:", error));
 }
 
-traerMeteo();
-function traerMeteo() {
-   fetch("https://api.open-meteo.com/v1/forecast?latitude=41.3851&longitude=2.1734&hourly=temperature_2m", 
-   { headers: {
-           'Accept': 'application/json'
-       } })
-       .then((res) => res.json())
-       .then(data => mostrarMeteo(data))
-       .catch((error) => console.error("Error al traer el meteo:", error));       
+let tempPrintHtml: HTMLElement | null = document.getElementById("meteo");
+let iconPrintHtml: HTMLElement | null = document.getElementById("iconPrint");
+interface WeatherData {
+  main: {
+      temp: number;
+  };
+  weather: Array<{
+      icon: string;
+  }>;
 }
 
-function traerChisteNorris(){
+traerMeteo();
+function traerMeteo(): void {
+  fetch(
+      "https://api.openweathermap.org/data/2.5/weather?id=3128760&appid=23ebbc592b1e6b4598e259f981fa0834"
+  )
+      .then((response) => response.json())
+      .then((data: WeatherData) => {
+          let temperature: number = data.main.temp;
+          let tempCelsius: string = (temperature - 273.15).toFixed(1);
+          let icon: string = data.weather[0].icon;
+          let iconHtml: string = `<img src="https://openweathermap.org/img/wn/${icon}.png" alt="Weather icon">`;
+          if (tempPrintHtml) {
+              tempPrintHtml.innerHTML = tempCelsius + "ºC";
+          }
+          if (iconPrintHtml) {
+              iconPrintHtml.innerHTML = iconHtml;
+          }
+      });
+}
+
+function traerChisteNorris(): void{
   fetch("https://api.chucknorris.io/jokes/random")
        .then((res) => res.json())
        .then(data => mostrarChisteNorris(data))
        .catch((error) => console.error("Error al traer el chiste de Chuck Norris:", error));
 }
 
-function mostrarMeteo(data: any) {
-  if (data.hourly && data.hourly.temperature_2m) {
-    const temperaturas = data.hourly.temperature_2m;
-    const meteoElemento = document.getElementById("meteo");
-    if (meteoElemento) {
-        meteoElemento.innerHTML = `Temperatura actual: ${temperaturas[0]} °C`;
-    } else {
-        console.error('El elemento en el que intentas imprimir no existe');
-    }
-  } else {
-    console.log('Datos de temperatura no disponibles.');
-  }
-}
 
-function mostrarChiste(chiste: chisteInterface){
+function mostrarChiste(chiste: chisteInterface): void{
   const h5 = document.createElement('h5');
   h5.textContent = chiste.joke;
   textoChiste = chiste.joke;
@@ -68,7 +76,7 @@ function mostrarChiste(chiste: chisteInterface){
   console.log(h5);
 }
 
-function mostrarChisteNorris(data: norrisInterface){ 
+function mostrarChisteNorris(data: norrisInterface): void{ 
   const h5 = document.createElement('h5');
   h5.textContent = data.value;
   textoChiste = data.value;
@@ -79,18 +87,8 @@ function mostrarChisteNorris(data: norrisInterface){
   console.log(h5);
 }
 
-function siguienteChiste(){
+function siguienteChiste(): void{
   let cont: number = 0;
-  if (buttonValora1 instanceof HTMLButtonElement) {
-    buttonValora1.disabled = false;
-  }
-  if (buttonValora2 instanceof HTMLButtonElement) {
-    buttonValora2.disabled = false;
-  }
-  if (buttonValora3 instanceof HTMLButtonElement) {
-    buttonValora3.disabled = false;
-  }
-
   if(chisteContainer){
     chisteContainer.innerHTML = '';
   }
@@ -104,19 +102,13 @@ function siguienteChiste(){
     traerChisteNorris();
 }
 estadoAlternar = !estadoAlternar;
+
+reportChistes.push(objetoValoracion);
+console.log("Array de chistes:");
+console.table(reportChistes);
 }
 
-function valoracionChistes(num: number){
-  if (buttonValora1 instanceof HTMLButtonElement) {
-    buttonValora1.disabled = true;
-  }
-  if (buttonValora2 instanceof HTMLButtonElement) {
-    buttonValora2.disabled = true;
-  }
-  if (buttonValora3 instanceof HTMLButtonElement) {
-    buttonValora3.disabled = true;
-  }
-
+function valoracionChistes(num: number): {}{
   let ahoraFecha: Date = new Date();
 
   const valoracion = {
@@ -124,10 +116,10 @@ function valoracionChistes(num: number){
     score: num,
     data: ahoraFecha,
   };
-  reportChistes.push(valoracion);
-  console.log("Array de chistes:");
-  console.table(reportChistes); 
+  objetoValoracion = valoracion;
+  return valoracion;
 }
+
 
 
 
