@@ -7,6 +7,7 @@ let buttonValora3 = document.querySelector(".valora3");
 let textoChiste: string = "";
 let estadoAlternar = false;
 let objetoValoracion: {} = {};
+let hayValoracion: boolean = false;
 
 interface chisteInterface{
   joke: string;
@@ -88,7 +89,6 @@ function mostrarChisteNorris(data: norrisInterface): void{
 }
 
 function siguienteChiste(): void{
-  let cont: number = 0;
   if(chisteContainer){
     chisteContainer.innerHTML = '';
   }
@@ -98,17 +98,21 @@ function siguienteChiste(): void{
   
   if (estadoAlternar) {
     traerChiste();
-} else {
+  } else {
     traerChisteNorris();
-}
-estadoAlternar = !estadoAlternar;
+  }
+  estadoAlternar = !estadoAlternar;
 
-reportChistes.push(objetoValoracion);
-console.log("Array de chistes:");
-console.table(reportChistes);
+  if(hayValoracion){
+    reportChistes.push(objetoValoracion);
+    console.log("Array de chistes:");
+    console.table(reportChistes);
+    hayValoracion = false;
+  }
 }
 
 function valoracionChistes(num: number): {}{
+  hayValoracion = true;
   let ahoraFecha: Date = new Date();
 
   const valoracion = {

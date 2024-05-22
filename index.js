@@ -7,6 +7,7 @@ var buttonValora3 = document.querySelector(".valora3");
 var textoChiste = "";
 var estadoAlternar = false;
 var objetoValoracion = {};
+var hayValoracion = false;
 traerChiste();
 function traerChiste() {
     fetch("https://icanhazdadjoke.com/", { headers: {
@@ -60,7 +61,6 @@ function mostrarChisteNorris(data) {
     console.log(h5);
 }
 function siguienteChiste() {
-    var cont = 0;
     if (chisteContainer) {
         chisteContainer.innerHTML = '';
     }
@@ -74,11 +74,18 @@ function siguienteChiste() {
         traerChisteNorris();
     }
     estadoAlternar = !estadoAlternar;
-    reportChistes.push(objetoValoracion);
-    console.log("Array de chistes:");
-    console.table(reportChistes);
+    //console.log("Array de chistes al empezar:");
+    //console.log("ongitud array al empezar: ", reportChistes.length);
+    //console.table(reportChistes);
+    if (hayValoracion) {
+        reportChistes.push(objetoValoracion);
+        console.log("Array de chistes:");
+        console.table(reportChistes);
+        hayValoracion = false;
+    }
 }
 function valoracionChistes(num) {
+    hayValoracion = true;
     var ahoraFecha = new Date();
     var valoracion = {
         joke: textoChiste,
